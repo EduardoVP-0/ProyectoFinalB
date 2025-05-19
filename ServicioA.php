@@ -1,5 +1,10 @@
+<?php
+include 'logueado.php';
+?>
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -75,7 +80,7 @@
             cursor: pointer;
             width: 45%;
             transition: background 0.3s ease, transform 0.3s ease;
-            margin-bottom: 10px; 
+            margin-bottom: 10px;
         }
 
         .action-buttons button.edit {
@@ -108,9 +113,9 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            width: 92%; 
+            width: 92%;
             transition: background 0.3s ease, transform 0.3s ease;
-            margin-top: 0px; 
+            margin-top: 0px;
         }
 
         .action-buttons .add-itinerary:hover {
@@ -157,7 +162,7 @@
             color: #333;
             margin-top: 5px;
         }
-        
+
         .price-duration-container {
             display: flex;
             justify-content: space-between;
@@ -166,11 +171,13 @@
 
         .price-duration-container .package-info {
             margin-bottom: 0;
-            width: 48%; 
+            width: 48%;
         }
     </style>
 </head>
+
 <body>
+    <h2>Bienvenido: <?php echo $_SESSION['usuario']; ?></h2>
     <div class="container">
         <div class="header-container">
             <h1>Gestión de Paquetes Turísticos</h1>
@@ -193,54 +200,115 @@
                 </div>
                 <div class="price-duration-container">
                     <div class="package-info">
-                      <label>Precio</label>
-                      <span>$4,500</span>
+                        <label>Precio</label>
+                        <span>$4,500</span>
                     </div>
                     <div class="package-info">
-                      <label>Duración</label>
-                      <span>5 días</span>
+                        <label>Duración</label>
+                        <span>5 días</span>
                     </div>
                 </div>
-              <div class="package-info">
-                <label>Fecha de Creación</label>
-                <span>2025-05-19</span>
-              </div>
-              <div class="action-buttons">
-                <button class="edit">Editar</button>
-                <button class="delete">Eliminar</button>
-                <button class="add-itinerary">Agregar Itinerario</button> 
-              </div>
-          </div>
+                <div class="package-info">
+                    <label>Fecha de Creación</label>
+                    <span>2025-05-19</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="edit">Editar</button>
+                    <button class="delete">Eliminar</button>
+                    <button class="add-itinerary">Agregar Itinerario</button>
+                </div>
+            </div>
 
-        <div class="package-card">
-          <div class="package-info">
-            <label>Nombre del Paquete</label>
-            <span>Chiapas Esencial</span>
-          </div>
-          <div class="package-info">
-            <label>Destino</label>
-            <span>Zona Arqueológica de Palenque</span>
-          </div>
-          <div class="price-duration-container">
-            <div class="package-info">
-              <label>Precio</label>
-              <span>$2,990</span>
+            <div class="package-card">
+                <div class="package-info">
+                    <label>Nombre del Paquete</label>
+                    <span>Chiapas Esencial</span>
+                </div>
+                <div class="package-info">
+                    <label>Destino</label>
+                    <span>Zona Arqueológica de Palenque</span>
+                </div>
+                <div class="price-duration-container">
+                    <div class="package-info">
+                        <label>Precio</label>
+                        <span>$2,990</span>
+                    </div>
+                    <div class="package-info">
+                        <label>Duración</label>
+                        <span>4 días</span>
+                    </div>
+                </div>
+                <div class="package-info">
+                    <label>Fecha de Creación</label>
+                    <span>2025-05-18</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="edit">Editar</button>
+                    <button class="delete">Eliminar</button>
+                    <button class="add-itinerary">Agregar Itinerario</button>
+                </div>
             </div>
-            <div class="package-info">
-              <label>Duración</label>
-              <span>4 días</span>
-            </div>
-          </div>
-          <div class="package-info">
-            <label>Fecha de Creación</label>
-            <span>2025-05-18</span>
-          </div>
-          <div class="action-buttons">
-            <button class="edit">Editar</button>
-            <button class="delete">Eliminar</button>
-            <button class="add-itinerary">Agregar Itinerario</button> 
-          </div>
+
+            <?php
+            include("./modelo/conexion.php");
+            $sql = "SELECT * FROM paquetes WHERE id_agente = '$id_agente'";
+            $resultado = mysqli_query($conexion, $sql);
+
+            while ($fila = mysqli_fetch_assoc($resultado)) {
+                // Convertir precio a formato con separador de miles y símbolo de peso
+                $precio_formateado = '$' . number_format($fila['precio_aproximado'], 0, '.', ',');
+                $duracion_dias = $fila['duracion_dias'] . ' días';
+            ?>
+
+                <div class="package-card">
+                    <div class="package-info">
+                        <label>Nombre del Paquete</label>
+                        <span><?php echo htmlspecialchars($fila['nombre']); ?></span>
+                    </div>
+                    <div class="package-info">
+                        <label>Destino</label>
+                        <span><?php echo htmlspecialchars($fila['destino']); ?></span>
+                    </div>
+                    <div class="price-duration-container">
+                        <div class="package-info">
+                            <label>Precio</label>
+                            <span><?php echo $precio_formateado; ?></span>
+                        </div>
+                        <div class="package-info">
+                            <label>Duración</label>
+                            <span><?php echo $duracion_dias; ?></span>
+                        </div>
+                    </div>
+                    <div class="package-info">
+                        <label>Fecha de Creación</label>
+                        <span><?php echo htmlspecialchars($fila['fecha_creacion']); ?></span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="edit" data-id="<?php echo $fila['id_paquete']; ?>">Editar</button>
+                        <button class="delete" data-id="<?php echo $fila['id_paquete']; ?>">Eliminar</button>
+                        <button class="add-itinerary">Agregar Itinerario</button>
+                    </div>
+                </div>
+
+            <?php
+            }
+            ?>
+
+
+
+
         </div>
-  </div>
+
+        <script>
+            document.querySelectorAll('.edit').forEach(button => {
+    button.addEventListener('click', function () {
+        const id = this.getAttribute('data-id');
+        console.log("Editar paquete con ID:", id);
+        // Aquí llamas a tu función para editar
+    });
+});
+
+        </script>
 </body>
+
 </html>

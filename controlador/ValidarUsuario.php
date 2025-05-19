@@ -14,7 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass = $_POST['pass'];
 
     // Consulta segura con prepared statements
-    $sql = "SELECT usuario FROM agente_viaje2 WHERE correo = ? AND contraseña = ?";
+    $sql = "SELECT id_agente, usuario FROM agente_viaje2 WHERE correo = ? AND contraseña = ?";
+
     $stmt = $conexion->prepare($sql);
     
     if ($stmt === false) {
@@ -26,10 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $_SESSION['usuario'] = $row['usuario'];
-        header("Location: ../menu.php");
-        exit();
+    $row = $result->fetch_assoc();
+    $_SESSION['usuario'] = $row['usuario'];
+    $_SESSION['id_agente'] = $row['id_agente']; // Guardar id_agente en sesión
+    header("Location: ../ServicioA.php");
+    exit();
     } else {
         header("Location: ../inicio.php?error=1");
         exit();
