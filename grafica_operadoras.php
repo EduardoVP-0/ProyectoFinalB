@@ -32,6 +32,12 @@ $total_reservas = $result_total_reservas->fetch_assoc()['total'];
 $sql_promedio = "SELECT AVG(calificacion) AS promedio FROM calificaciones";
 $result_promedio = $conexion->query($sql_promedio);
 $promedio_calificaciones = round($result_promedio->fetch_assoc()['promedio'], 2);
+
+// --- D) Ingresos Generados (Suma total)
+$sql_ingresos = "SELECT SUM(precio_paquete) AS total_ingresos FROM reservas_pv";
+$result_ingresos = $conexion->query($sql_ingresos);
+$total_ingresos = number_format($result_ingresos->fetch_assoc()['total_ingresos'], 2);
+
 ?>
 
 
@@ -64,11 +70,12 @@ $promedio_calificaciones = round($result_promedio->fetch_assoc()['promedio'], 2)
 
 <div class="contenedor">
   <h2>Gráfica de Operadoras con más Ventas</h2>
-  <canvas id="graficaOperadoras"></canvas>
+  <canvas id="graficaOperadoras"  height="100"></canvas>
 
   <div class="info-adicional">
     <h3>Total de Reservaciones: <?php echo $total_reservas; ?></h3>
     <h3>Promedio General de Calificaciones: <?php echo $promedio_calificaciones; ?> / 5</h3>
+    <h3>Ingresos Generados: $ <?php echo $total_ingresos; ?></h3>
   </div>
 </div>
 
