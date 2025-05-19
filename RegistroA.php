@@ -1,3 +1,8 @@
+<?php
+include 'logueado.php';
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -136,7 +141,13 @@
 <body>
   <div class="form-container">
     <h2>Registrar Paquete Turístico</h2>
-    <form action="#" method="post" enctype="multipart/form-data">
+<h2>Bienvenido: <?php echo $_SESSION['usuario']; ?></h2>
+
+
+
+    <form action="./controlador/add_paquete.php" method="post" enctype="multipart/form-data">
+      <!-- Id OCULTO -->
+      <input type="hidden" name="id_agente" value="<?php echo $_SESSION['id_agente']; ?>"> 
       <div class="image-description-container">
         <div class="image-upload-container">
           <label for="foto">Imagen del Paquete</label>
@@ -178,6 +189,8 @@
 
       <button type="submit">Registrar Paquete</button>
     </form>
+
+
   </div>
 
   <script>

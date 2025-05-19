@@ -1,10 +1,5 @@
 <?php
-session_start();
-// Verificar si hay sesión activa
-if(!isset($_SESSION['usuario'])) {
-    header("Location: index.php");
-    exit;
-}
+include 'Logueado.php'
 ?>
 <!DOCTYPE html>
 <html>
