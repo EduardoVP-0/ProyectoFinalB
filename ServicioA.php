@@ -281,10 +281,13 @@ include 'logueado.php';
                     </div>
                     <div class="package-info">
                         <label>Fecha de Creación</label>
-                        <span><?php echo htmlspecialchars($fila['fecha_creacion']); ?></span>
+                        <span><?php echo date('Y-m-d', strtotime($fila['fecha_creacion'])); ?></span>
                     </div>
+                    <!-- En la parte de las tarjetas de paquetes -->
                     <div class="action-buttons">
-                        <button class="edit" data-id="<?php echo $fila['id_paquete']; ?>">Editar</button>
+                        <a href="Edit_RegistroA.php?id_paquete=<?php echo $fila['id_paquete']; ?>">
+                            <button class="edit">Editar</button>
+                        </a>
                         <button class="delete" data-id="<?php echo $fila['id_paquete']; ?>">Eliminar</button>
                         <button class="add-itinerary">Agregar Itinerario</button>
                     </div>
@@ -293,20 +296,9 @@ include 'logueado.php';
             <?php
             }
             ?>
-
-
-
-
         </div>
 
         <script>
-            document.querySelectorAll('.edit').forEach(button => {
-    button.addEventListener('click', function () {
-        const id = this.getAttribute('data-id');
-        console.log("Editar paquete con ID:", id);
-        // Aquí llamas a tu función para editar
-    });
-});
 
         </script>
 </body>
