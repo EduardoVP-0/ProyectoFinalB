@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,7 +14,8 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    body, html {
+    body,
+    html {
       height: 100%;
     }
 
@@ -38,12 +40,12 @@
     }
 
     .login-box {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 480px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 480px;
     }
 
 
@@ -118,8 +120,20 @@
     .login-box .register a:hover {
       text-decoration: underline;
     }
+    .error-message {
+  background-color: #ffe0e0;
+  color: #b00020;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ff9d9d;
+}
+
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="left-side"></div>
@@ -128,11 +142,14 @@
         <h2>Registrarse</h2>
         <div class="image-preview" id="preview">
         </div>
-        <form>
-          <input type="file" accept="image/*" onchange="previewImage(event)" required>
-          <input type="text" placeholder="Nombre de usuario" required>
-          <input type="email" placeholder="Correo electrónico" required>
-          <input type="password" placeholder="Contraseña" required>
+        <form action="controlador/registro_controlador.php" method="POST" enctype="multipart/form-data">
+          <input type="file" name="foto" accept="image/*" onchange="previewImage(event)" required>
+          <input type="text" name="usuario" placeholder="Nombre de usuario" required>
+          <input type="email" name="correo" placeholder="Correo electrónico" required>
+          <input type="password" name="password" placeholder="Contraseña" required>
+          <?php if (isset($_GET['error']) && $_GET['error'] == 'correo'): ?>
+  <div class="error-message">El correo ya está registrado. Usa otro.</div>
+<?php endif; ?>
           <button type="submit">Crear cuenta</button>
         </form>
         <div class="register">¿Ya tienes cuenta? <a href="Inicio.php">Inicia sesión</a></div>
@@ -143,7 +160,7 @@
   <script>
     function previewImage(event) {
       const reader = new FileReader();
-      reader.onload = function(){
+      reader.onload = function() {
         const output = document.getElementById('preview');
         output.innerHTML = '<img src="' + reader.result + '" alt="Foto de perfil">';
       };
@@ -151,4 +168,5 @@
     }
   </script>
 </body>
+
 </html>
