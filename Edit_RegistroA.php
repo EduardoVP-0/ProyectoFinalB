@@ -14,22 +14,9 @@ if (isset($_GET['id_paquete'])) {
         $paquete = $resultado->fetch_assoc();
         $fecha_creacion = date('Y-m-d\TH:i', strtotime($paquete['fecha_creacion']));
         
-        // Buscar la imagen en la carpeta
-        $ruta_imagen = '';
-        if (!empty($paquete['Foto'])) {
-            $nombre_imagen = $paquete['Foto'];
-            $ruta_posible = './vista/Paquetes/' . $nombre_imagen;
-            
-            if (file_exists($ruta_posible)) {
-                $ruta_imagen = $ruta_posible;
-            } else {
-                // Intentar con ruta relativa diferente
-                $ruta_posible = './vista/Paquetes/' . $nombre_imagen;
-                if (file_exists($ruta_posible)) {
-                    $ruta_imagen = $ruta_posible;
-                }
-            }
-        }
+        // Obtener la imagen del paquete
+        $ruta_imagen = $paquete['Foto'];
+        $mostrar_imagen = (!empty($ruta_imagen) && file_exists($ruta_imagen)) ? $ruta_imagen : false;
     } else {
         header("Location: gestion_paquetes.php");
         exit();
@@ -39,8 +26,6 @@ if (isset($_GET['id_paquete'])) {
     exit();
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -180,6 +165,7 @@ if (isset($_GET['id_paquete'])) {
 <body>
   <div class="form-container">
     <h2>Editar Paquete Turístico</h2>
+    
     <h2>Bienvenido: <?php echo $_SESSION['usuario']; ?></h2>
 
     <form action="./controlador/actualizar_paquete.php" method="post" enctype="multipart/form-data">
@@ -192,16 +178,10 @@ if (isset($_GET['id_paquete'])) {
           <label for="foto">Imagen del Paquete</label>
           <input type="file" id="foto" name="foto" accept="image/*" onchange="previewImage(event)">
           <div class="image-preview" id="imagePreview">
-            <?php if(!empty($ruta_imagen)): ?>
-              <img src="<?php echo $ruta_imagen; ?>" alt="Imagen del paquete">
-              <p style="font-size: 12px; margin-top: 5px;"><?php echo $paquete['Foto']; ?></p>
+            <?php if($mostrar_imagen): ?>
+              <img src="<?php echo $mostrar_imagen; ?>" alt="Imagen del paquete">
             <?php else: ?>
               <span>No hay imagen disponible</span>
-              <?php if(!empty($paquete['Foto'])): ?>
-                <p style="font-size: 12px; color: #ff0000; margin-top: 5px;">
-                  Archivo no encontrado: <?php echo $paquete['Foto']; ?>
-                </p>
-              <?php endif; ?>
             <?php endif; ?>
           </div>
         </div>
@@ -226,9 +206,9 @@ if (isset($_GET['id_paquete'])) {
           </div>
         </div>
       </div>
-      
+
       <div class="form-group">
-        <label for="precio">Precio</label>
+        <label for="precio">Precio (aproximado)</label>
         <input type="text" id="precio" name="precio" value="<?php echo $paquete['Precio']; ?>" required>
       </div>
       
@@ -261,8 +241,8 @@ if (isset($_GET['id_paquete'])) {
         };
         reader.readAsDataURL(file);
       } else {
-        <?php if(!empty($ruta_imagen)): ?>
-          preview.innerHTML = '<img src="<?php echo $ruta_imagen; ?>" alt="Imagen actual">';
+        <?php if($mostrar_imagen): ?>
+          preview.innerHTML = '<img src="<?php echo $mostrar_imagen; ?>" alt="Imagen actual">';
         <?php else: ?>
           preview.innerHTML = '<span>No hay imagen disponible</span>';
         <?php endif; ?>

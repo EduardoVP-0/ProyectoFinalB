@@ -177,7 +177,6 @@ include 'logueado.php';
 </head>
 
 <body>
-    <h2>Bienvenido: <?php echo $_SESSION['usuario']; ?></h2>
     <div class="container">
         <div class="header-container">
             <h1>Gestión de Paquetes Turísticos</h1>
@@ -189,65 +188,6 @@ include 'logueado.php';
         </div>
 
         <div class="packages-container">
-            <div class="package-card">
-                <div class="package-info">
-                    <label>Nombre del Paquete</label>
-                    <span>Chiapas Bonito</span>
-                </div>
-                <div class="package-info">
-                    <label>Destino</label>
-                    <span>Lagunas de Montebello</span>
-                </div>
-                <div class="price-duration-container">
-                    <div class="package-info">
-                        <label>Precio</label>
-                        <span>$4,500</span>
-                    </div>
-                    <div class="package-info">
-                        <label>Duración</label>
-                        <span>5 días</span>
-                    </div>
-                </div>
-                <div class="package-info">
-                    <label>Fecha de Creación</label>
-                    <span>2025-05-19</span>
-                </div>
-                <div class="action-buttons">
-                    <button class="edit">Editar</button>
-                    <button class="delete">Eliminar</button>
-                    <button class="add-itinerary">Agregar Itinerario</button>
-                </div>
-            </div>
-
-            <div class="package-card">
-                <div class="package-info">
-                    <label>Nombre del Paquete</label>
-                    <span>Chiapas Esencial</span>
-                </div>
-                <div class="package-info">
-                    <label>Destino</label>
-                    <span>Zona Arqueológica de Palenque</span>
-                </div>
-                <div class="price-duration-container">
-                    <div class="package-info">
-                        <label>Precio</label>
-                        <span>$2,990</span>
-                    </div>
-                    <div class="package-info">
-                        <label>Duración</label>
-                        <span>4 días</span>
-                    </div>
-                </div>
-                <div class="package-info">
-                    <label>Fecha de Creación</label>
-                    <span>2025-05-18</span>
-                </div>
-                <div class="action-buttons">
-                    <button class="edit">Editar</button>
-                    <button class="delete">Eliminar</button>
-                    <button class="add-itinerary">Agregar Itinerario</button>
-                </div>
-            </div>
 
             <?php
             include("./modelo/conexion.php");
@@ -255,9 +195,6 @@ include 'logueado.php';
             $resultado = mysqli_query($conexion, $sql);
 
             while ($fila = mysqli_fetch_assoc($resultado)) {
-                // Convertir precio a formato con separador de miles y símbolo de peso
-                $precio_formateado = '$' . number_format($fila['precio_aproximado'], 0, '.', ',');
-                $duracion_dias = $fila['duracion_dias'] . ' días';
             ?>
 
                 <div class="package-card">
@@ -272,11 +209,11 @@ include 'logueado.php';
                     <div class="price-duration-container">
                         <div class="package-info">
                             <label>Precio</label>
-                            <span><?php echo $precio_formateado; ?></span>
+                            <span><?php echo '$' . number_format($fila['Precio'], 0, '.', ','); ?></span>
                         </div>
                         <div class="package-info">
                             <label>Duración</label>
-                            <span><?php echo $duracion_dias; ?></span>
+                            <span><?php echo htmlspecialchars($fila['Duracion']) . ' días'; ?></span>
                         </div>
                     </div>
                     <div class="package-info">
@@ -285,9 +222,7 @@ include 'logueado.php';
                     </div>
                     <!-- En la parte de las tarjetas de paquetes -->
                     <div class="action-buttons">
-                        <a href="Edit_RegistroA.php?id_paquete=<?php echo $fila['id_paquete']; ?>">
-                            <button class="edit">Editar</button>
-                        </a>
+                        <button class="edit" data-id="<?php echo $fila['id_paquete']; ?>">Editar</button>
                         <button class="delete" data-id="<?php echo $fila['id_paquete']; ?>">Eliminar</button>
                         <button class="add-itinerary">Agregar Itinerario</button>
                     </div>
@@ -298,9 +233,53 @@ include 'logueado.php';
             ?>
         </div>
 
-        <script>
+    <script>
 
-        </script>
+        //DELETE
+        // Editar: redirige a la página con el id en GET
+document.querySelectorAll('.edit').forEach(button => {
+    button.addEventListener('click', () => {
+        const id = button.getAttribute('data-id');
+        window.location.href = `Edit_RegistroA.php?id_paquete=${encodeURIComponent(id)}`;
+    });
+});
+
+
+        //ELIMINAR
+        document.querySelectorAll('.delete').forEach(button => {
+    button.addEventListener('click', () => {
+        const id = button.getAttribute('data-id');
+
+        if (!confirm('¿Seguro que quieres eliminar este paquete?')) {
+            return;
+        }
+
+        fetch('controlador/delete_paquete.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `id_paquete=${encodeURIComponent(id)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Paquete eliminado correctamente.');
+                // Opcional: eliminar el botón o el contenedor del paquete de la vista
+                button.closest('.package-card')?.remove(); // ajusta selector si tienes contenedor
+            } else {
+                alert('Error: ' + (data.error || 'No se pudo eliminar.'));
+            }
+        })
+        .catch(error => {
+            alert('Error en la comunicación con el servidor: ' + error.message);
+            console.error('Error:', error);
+        });
+    });
+});
+
+    </script>
+
 </body>
 
 </html>
